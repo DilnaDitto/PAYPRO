@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 800px; text-align: center;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: #fff; margin-bottom: 10px;">Select Your Portal</h2>
+    <p style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 40px;">Please choose your designated login area to continue.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 10px;">
+        
+        <a href="{{ url_for('employee_login') }}" class="portal-btn employee-btn">
+            <div class="portal-icon">👨‍💻</div>
+            <h3>Employee Portal</h3>
+            <p>Access your dashboard, log attendance, and view payslips.</p>
+        </a>
+        
+        <a href="{{ url_for('hr_login') }}" class="portal-btn hr-btn">
+            <div class="portal-icon">🛡️</div>
+            <h3>HR Admin Portal</h3>
+            <p>Manage staff, process payroll, and view company reports.</p>
+        </a>
+        
+    </div>
+</div>
+
+<style>
+    .portal-btn {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 40px 20px;
+        text-decoration: none;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .portal-icon { font-size: 50px; margin-bottom: 20px; }
+    .portal-btn h3 { font-family: 'Syne', sans-serif; font-size: 22px; margin-bottom: 10px; color: #fff; transition: 0.3s; }
+    .portal-btn p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    
+    .employee-btn:hover { border-color: var(--primary); background: rgba(0, 240, 255, 0.05); transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0, 240, 255, 0.2); }
+    .employee-btn:hover h3 { color: var(--primary); }
+    
+    .hr-btn:hover { border-color: var(--secondary); background: rgba(255, 0, 212, 0.05); transform: translateY(-8px); box-shadow: 0 15px 30px rgba(255, 0, 212, 0.2); }
+    .hr-btn:hover h3 { color: var(--secondary); }
+</style>
+{% endblock %}

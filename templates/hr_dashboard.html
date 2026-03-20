@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 1300px; text-align: center;">
+    <div style="display: inline-block; padding: 5px 15px; background: rgba(255, 0, 212, 0.2); border: 1px solid var(--secondary); border-radius: 20px; color: var(--secondary); font-size: 12px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Admin Access</div>
+    
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 32px; color: var(--primary); margin-bottom: 10px;">HR Control Center</h2>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 40px;">Welcome back, {{ first_name }}. Select a module to manage system data.</p>
+
+    <div class="five-column-grid">
+        <a href="{{ url_for('admin_employees') }}" class="dash-card">
+            <div class="dash-icon">👥</div>
+            <h3>Employee Details</h3>
+            <p>Add, edit, or delete staff records</p>
+        </a>
+        
+        <a href="{{ url_for('admin_payroll') }}" class="dash-card">
+            <div class="dash-icon">💸</div>
+            <h3>Payroll & Salaries</h3>
+            <p>Set structures & process payouts</p>
+        </a>
+        
+        <a href="{{ url_for('admin_leaves') }}" class="dash-card">
+            <div class="dash-icon">✅</div>
+            <h3>Leave Management</h3>
+            <p>Approve or reject time-off requests</p>
+        </a>
+
+        <a href="{{ url_for('admin_reports') }}" class="dash-card">
+            <div class="dash-icon">📊</div>
+            <h3>System Reports</h3>
+            <p>Generate Salary, Tax & Attendance data</p>
+        </a>
+
+        <a href="{{ url_for('admin_settings') }}" class="dash-card">
+            <div class="dash-icon">⚙️</div>
+            <h3>Settings</h3>
+            <p>Manage system preferences</p>
+        </a>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('logout') }}" class="btn-secondary" style="width: auto; padding: 12px 40px;">Logout Securely</a>
+    </div>
+</div>
+
+<style>
+    .five-column-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 20px; /* Increased gap between cards */
+        margin-bottom: 50px;
+    }
+
+    .dash-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 40px 20px; /* INCREASED PADDING for taller/wider cards */
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .dash-card:hover {
+        background: rgba(255, 0, 212, 0.08);
+        border-color: var(--secondary);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(255, 0, 212, 0.15);
+    }
+    
+    .dash-icon {
+        font-size: 45px; /* LARGER ICONS */
+        margin-bottom: 18px;
+        transition: 0.3s;
+    }
+    
+    .dash-card h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 17px; /* LARGER TITLES */
+        margin-bottom: 10px;
+        color: #fff;
+    }
+    
+    .dash-card p {
+        font-size: 13px; /* LARGER SUBTEXT */
+        color: rgba(255,255,255,0.5);
+        line-height: 1.5;
+    }
+
+    @media (max-width: 1100px) {
+        .five-column-grid {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 400px; padding: 40px 30px; text-align: center;">
+    <div style="font-size: 45px; margin-bottom: 10px;">🛡️</div>
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 24px; color: var(--secondary); margin-bottom: 30px;">HR Admin Login</h2>
+    
+    <form method="POST" action="{{ url_for('hr_login') }}" style="display: flex; flex-direction: column; gap: 15px;">
+        <input type="number" name="employee_id" placeholder="Admin ID" required class="form-input hr-input">
+        <input type="password" name="password" placeholder="Admin Password" required class="form-input hr-input">
+        
+        <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, rgba(255, 0, 212, 0.15) 0%, rgba(157, 78, 221, 0.15) 100%); border-color: var(--secondary); text-shadow: 0 0 10px var(--glow-magenta); margin-top: 10px; margin-bottom: 20px; padding: 14px;">Access Control</button>
+    </form>
+    
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 10px;">New HR Administrator?</p>
+        <a href="{{ url_for('hr_register') }}" style="color: var(--secondary); text-decoration: none; font-size: 14px; font-weight: bold; transition: 0.3s;">Register HR Account</a>
+    </div>
+</div>
+
+<style>
+    .form-input { width: 100%; padding: 14px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-family: 'Outfit', sans-serif; transition: all 0.3s ease;}
+    .hr-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 15px var(--glow-magenta);}
+    a[href="{{ url_for('hr_register') }}"]:hover { text-shadow: 0 0 10px var(--glow-magenta); }
+</style>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 1000px; text-align: center;">
+    <div style="display: inline-block; padding: 5px 15px; background: rgba(0, 240, 255, 0.2); border: 1px solid var(--primary); border-radius: 20px; color: var(--primary); font-size: 12px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Employee Access</div>
+    
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 32px; color: #fff; margin-bottom: 10px;">Welcome, {{ first_name }}!</h2>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 40px;">Employee Dashboard</p>
+
+    <div class="three-column-grid">
+        
+        <a href="{{ url_for('attendance') }}" class="dash-card">
+            <div class="dash-icon">⏱️</div>
+            <h3>Attendance</h3>
+            <p>Log hours & view records</p>
+        </a>
+        
+        <a href="{{ url_for('salary') }}" class="dash-card">
+            <div class="dash-icon">💰</div>
+            <h3>Salary Details</h3>
+            <p>View payslips & breakdown</p>
+        </a>
+        
+        <a href="{{ url_for('leave') }}" class="dash-card">
+            <div class="dash-icon">🏖️</div>
+            <h3>Leave Management</h3>
+            <p>Apply for time off</p>
+        </a>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('logout') }}" class="btn-secondary" style="width: auto; padding: 12px 40px;">Logout Securely</a>
+    </div>
+</div>
+
+<style>
+    /* Forces exactly 3 equal columns on one line */
+    .three-column-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 25px; 
+        margin-bottom: 40px;
+    }
+
+    /* Standard Card Design */
+    .dash-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 40px 20px;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .dash-card:hover {
+        background: rgba(0, 240, 255, 0.08); /* Cyan hover for Employee */
+        border-color: var(--primary);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 240, 255, 0.15);
+    }
+    
+    .dash-icon {
+        font-size: 45px;
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+    
+    .dash-card h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: var(--primary);
+    }
+    
+    .dash-card p {
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.5;
+    }
+
+    /* Stacks vertically on small mobile screens */
+    @media (max-width: 768px) {
+        .three-column-grid {
+            grid-template-columns: 1fr; 
+        }
+    }
+</style>
+{% endblock %}

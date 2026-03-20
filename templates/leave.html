@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 900px;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: var(--primary); margin-bottom: 20px; text-align: center;">Leave Management</h2>
+    
+    <form method="POST" action="{{ url_for('leave') }}" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        
+        <div style="grid-column: 1 / -1;">
+            <select name="leave_type" required class="data-input" style="background: var(--dark-2);">
+                <option value="" disabled selected>Select Leave Type</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+                <option value="Paid Time Off (PTO)">Paid Time Off (PTO)</option>
+            </select>
+        </div>
+        
+        <div>
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-left: 10px;">Start Date</label>
+            <input type="date" name="start_date" required class="data-input" style="color-scheme: dark;">
+        </div>
+        <div>
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-left: 10px;">End Date</label>
+            <input type="date" name="end_date" required class="data-input" style="color-scheme: dark;">
+        </div>
+
+        <div style="grid-column: 1 / -1; margin-top: 10px;">
+            <button type="submit" class="btn-primary" style="margin-bottom: 0;">Submit Leave Request</button>
+        </div>
+    </form>
+
+    <h3 style="font-family: 'Syne', sans-serif; font-size: 20px; color: #fff; margin-bottom: 15px;">Leave History</h3>
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.leave_type }}</td>
+                    <td>{{ record.start_date }}</td>
+                    <td>{{ record.end_date }}</td>
+                    <td>
+                        <span class="status-badge {% if record.status == 'Approved' %}status-approved{% elif record.status == 'Rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                            {{ record.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align: center; color: rgba(255,255,255,0.5);">No leave requests found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('dashboard') }}" class="btn-secondary" style="width: auto; padding: 10px 20px;">&larr; Back to Dashboard</a>
+    </div>
+</div>
+
+<style>
+    .data-input { width: 100%; padding: 12px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: 'Outfit', sans-serif; }
+    .data-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px var(--glow-cyan); }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .data-table th { padding: 15px; background: rgba(0, 240, 255, 0.1); color: var(--primary); font-family: 'Syne', sans-serif; letter-spacing: 1px; }
+    .data-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    /* NEW CSS CLASSES FOR STATUS BADGES */
+    .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .status-approved { background: rgba(76, 209, 55, 0.2); color: #4cd137; }
+    .status-rejected { background: rgba(232, 65, 24, 0.2); color: #e84118; }
+    .status-pending { background: rgba(251, 197, 49, 0.2); color: #fbc531; }
+</style>
+{% endblock %}

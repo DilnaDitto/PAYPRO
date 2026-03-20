@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 800px;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: var(--secondary); margin-bottom: 30px; text-align: center;">System Settings</h2>
+    
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <div class="setting-row">
+            <div>
+                <h4 style="color: #fff; font-size: 16px; margin-bottom: 5px;">Email Notifications</h4>
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Send automated emails when salary is processed or leaves are approved.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <h4 style="color: #fff; font-size: 16px; margin-bottom: 5px;">Employee Self-Registration</h4>
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Allow new employees to create their own accounts via the portal.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <h4 style="color: #fff; font-size: 16px; margin-bottom: 5px;">Maintenance Mode</h4>
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Lock standard employees out of the dashboard during system updates.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button onclick="alert('Settings saved successfully!');" class="btn-primary" style="background: linear-gradient(135deg, rgba(255, 0, 212, 0.15) 0%, rgba(157, 78, 221, 0.15) 100%); border-color: var(--secondary); margin-top: 20px;">Save Configuration</button>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('hr_dashboard') }}" class="btn-secondary" style="width: auto; padding: 10px 20px;">&larr; Back to Control Center</a>
+    </div>
+</div>
+
+<style>
+    .setting-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+    }
+
+    /* Custom Toggle Switch CSS */
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.2);}
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--secondary); border-color: var(--secondary); box-shadow: 0 0 10px var(--glow-magenta);}
+    input:checked + .slider:before { transform: translateX(24px); }
+</style>
+{% endblock %}

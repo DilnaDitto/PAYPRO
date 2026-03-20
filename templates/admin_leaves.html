@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 1000px;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: var(--secondary); margin-bottom: 30px; text-align: center;">Manage Leave Requests</h2>
+    
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Leave Type</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leaves %}
+                <tr>
+                    <td>
+                        <strong>{{ leave.first_name }} {{ leave.last_name }}</strong><br>
+                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">ID: {{ leave.employee_id }}</span>
+                    </td>
+                    <td>{{ leave.leave_type }}</td>
+                    <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
+                    <td>
+                        <span class="status-badge 
+                            {% if leave.status == 'Approved' %}status-approved
+                            {% elif leave.status == 'Rejected' %}status-rejected
+                            {% else %}status-pending{% endif %}">
+                            {{ leave.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if leave.status == 'Pending' %}
+                        <form method="POST" action="{{ url_for('admin_leaves') }}" style="display: flex; gap: 10px;">
+                            <input type="hidden" name="leave_id" value="{{ leave.leave_id }}">
+                            <button type="submit" name="action" value="Approved" class="btn-action btn-approve">Approve</button>
+                            <button type="submit" name="action" value="Rejected" class="btn-action btn-reject">Reject</button>
+                        </form>
+                        {% else %}
+                        <span style="font-size: 12px; color: rgba(255,255,255,0.4);">Actioned</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" style="text-align: center; color: rgba(255,255,255,0.5);">No leave requests found in the system.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('hr_dashboard') }}" class="btn-secondary" style="width: auto; padding: 10px 20px;">&larr; Back to Control Center</a>
+    </div>
+</div>
+
+<style>
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .data-table th { padding: 15px; background: rgba(255, 0, 212, 0.1); color: var(--secondary); font-family: 'Syne', sans-serif; letter-spacing: 1px; }
+    .data-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); vertical-align: middle; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+    .status-approved { background: rgba(76, 209, 55, 0.2); color: #4cd137; }
+    .status-rejected { background: rgba(232, 65, 24, 0.2); color: #e84118; }
+    .status-pending { background: rgba(251, 197, 49, 0.2); color: #fbc531; }
+
+    .btn-action { padding: 8px 12px; border-radius: 8px; border: none; font-family: 'Outfit', sans-serif; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; color: #fff; }
+    .btn-approve { background: rgba(76, 209, 55, 0.2); border: 1px solid #4cd137; color: #4cd137; }
+    .btn-approve:hover { background: #4cd137; color: #000; }
+    .btn-reject { background: rgba(232, 65, 24, 0.2); border: 1px solid #e84118; color: #e84118; }
+    .btn-reject:hover { background: #e84118; color: #fff; }
+</style>
+{% endblock %}

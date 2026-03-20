@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 800px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="display: inline-block; padding: 5px 15px; background: rgba(255, 0, 212, 0.2); border: 1px solid var(--secondary); border-radius: 20px; color: var(--secondary); font-size: 12px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Restricted Access</div>
+        <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: var(--secondary);">HR Administrator Registration</h2>
+    </div>
+    
+    <form method="POST" action="{{ url_for('hr_register') }}" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        
+        <input type="text" name="first_name" placeholder="First Name" required class="form-input">
+        <input type="text" name="last_name" placeholder="Last Name" required class="form-input">
+        
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 5px; margin-left: 10px;">Date of Birth</label>
+            <input type="date" name="dob" required class="form-input" style="color-scheme: dark;">
+        </div>
+        
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 5px; margin-left: 10px;">Gender</label>
+            <select name="gender" class="form-input" style="background: var(--dark-2);">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <input type="text" name="job_title" placeholder="HR Job Title (e.g. Payroll Manager)" required class="form-input">
+        <input type="text" name="contact" placeholder="Contact Number" maxlength="15" required class="form-input">
+        
+        <input type="password" name="password" placeholder="Create Admin Password" required class="form-input">
+        
+        <input type="number" name="employee_id" placeholder="Choose Admin ID (Numbers only)" required class="form-input">
+        
+        <div style="grid-column: 1 / -1; margin-top: 20px;">
+            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, rgba(255, 0, 212, 0.15) 0%, rgba(157, 78, 221, 0.15) 100%); border-color: var(--secondary); text-shadow: 0 0 10px var(--glow-magenta);">Register HR Account</button>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="{{ url_for('hr_login') }}" style="color: var(--secondary); text-decoration: none; font-size: 14px; transition: 0.3s;">&larr; Return to HR Login</a>
+    </div>
+</div>
+
+<style>
+    .form-input { width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-family: 'Outfit', sans-serif; transition: all 0.3s ease;}
+    .form-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 15px var(--glow-magenta);}
+    .form-input::placeholder { color: rgba(255,255,255,0.4);}
+    a[href="{{ url_for('hr_login') }}"]:hover { color: #fff !important; text-shadow: 0 0 10px var(--glow-magenta); }
+</style>
+{% endblock %}

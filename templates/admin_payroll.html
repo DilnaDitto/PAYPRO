@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 800px;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 28px; color: var(--secondary); margin-bottom: 30px; text-align: center;">Generate Payroll</h2>
+    
+    <form method="POST" action="{{ url_for('admin_payroll') }}" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        
+        <div style="grid-column: 1 / -1; display: flex; flex-direction: column;">
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 5px; margin-left: 10px;">Select Employee</label>
+            <select name="employee_id" required class="form-input" style="background: var(--dark-2);">
+                <option value="" disabled selected>Choose an Employee...</option>
+                {% for emp in employees %}
+                    <option value="{{ emp.employee_id }}">{{ emp.first_name }} {{ emp.last_name }} (ID: {{ emp.employee_id }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 5px; margin-left: 10px;">Pay Period (e.g., April 2026)</label>
+            <input type="text" name="pay_period" required class="form-input">
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 5px; margin-left: 10px;">Base Pay ($)</label>
+            <input type="number" step="0.01" name="base_pay" required class="form-input" placeholder="0.00">
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: #4cd137; font-size: 12px; margin-bottom: 5px; margin-left: 10px;">+ Allowances ($)</label>
+            <input type="number" step="0.01" name="allowances" value="0.00" required class="form-input">
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: #4cd137; font-size: 12px; margin-bottom: 5px; margin-left: 10px;">+ Bonuses ($)</label>
+            <input type="number" step="0.01" name="bonuses" value="0.00" required class="form-input">
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: #e84118; font-size: 12px; margin-bottom: 5px; margin-left: 10px;">- Deductions ($)</label>
+            <input type="number" step="0.01" name="deductions" value="0.00" required class="form-input">
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+            <label style="color: #e84118; font-size: 12px; margin-bottom: 5px; margin-left: 10px;">- Tax ($)</label>
+            <input type="number" step="0.01" name="tax" value="0.00" required class="form-input">
+        </div>
+
+        <div style="grid-column: 1 / -1; margin-top: 20px;">
+            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, rgba(255, 0, 212, 0.15) 0%, rgba(157, 78, 221, 0.15) 100%); border-color: var(--secondary); text-shadow: 0 0 10px var(--glow-magenta);">Process & Generate Payslip</button>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="{{ url_for('hr_dashboard') }}" class="btn-secondary" style="width: auto; padding: 10px 20px;">&larr; Back to Control Center</a>
+    </div>
+</div>
+
+<style>
+    .form-input { width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-family: 'Outfit', sans-serif; transition: all 0.3s ease;}
+    .form-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 15px var(--glow-magenta);}
+    .btn-primary:hover { background: linear-gradient(135deg, rgba(255, 0, 212, 0.3) 0%, rgba(157, 78, 221, 0.3) 100%) !important; box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 20px var(--glow-magenta) !important; }
+</style>
+{% endblock %}
