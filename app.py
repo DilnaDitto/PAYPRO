@@ -10,7 +10,7 @@ def get_db_connection():
     return mysql.connector.connect(
         host='localhost',
         user='root',         
-        password='root', 
+        password='root', # Make sure to change this to your actual MySQL password!
         database='EmployeeManagement'
     )
 
@@ -24,7 +24,7 @@ def about(): return render_template('about.html')
 @app.route('/contact')
 def contact(): return render_template('contact.html')
 
-# --- AUTHENTICATION ROUTES (SEPARATED) ---
+# --- AUTHENTICATION & MULTI-SESSION CHECK-IN ---
 @app.route('/employee_login', methods=['GET', 'POST'])
 def employee_login():
     if request.method == 'POST':
@@ -35,8 +35,6 @@ def employee_login():
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM Employee WHERE employee_id = %s", (emp_id,))
         user = cursor.fetchone()
-        cursor.close()
-        conn.close()
 
         if user and check_password_hash(user['password'], password):
             if user.get('role') == 'HR':
@@ -47,9 +45,21 @@ def employee_login():
             session['employee_id'] = user['employee_id']
             session['first_name'] = user['first_name']
             session['role'] = 'Employee'
+            
+            # AUTOMATED CHECK-IN (Forces a new session row every time they log in)
+            today_date = datetime.today().strftime('%Y-%m-%d')
+            current_time = datetime.now().strftime('%H:%M:%S')
+            
+            cursor.execute("INSERT INTO Attendance (employee_id, date, check_in) VALUES (%s, %s, %s)", (emp_id, today_date, current_time))
+            conn.commit()
+            
+            cursor.close()
+            conn.close()
             return redirect(url_for('dashboard'))
         else:
             flash('Incorrect Employee ID or Password!')
+            cursor.close()
+            conn.close()
     return render_template('employee_login.html')
 
 @app.route('/hr_login', methods=['GET', 'POST'])
@@ -100,14 +110,12 @@ def register():
             """, (emp_id, first_name, last_name, dob, gender, job_title, contact, hashed_password))
             conn.commit()
             
-            # --- SMART REDIRECT LOGIC ---
             if session.get('loggedin') and session.get('role') == 'HR':
                 flash(f'New employee ({first_name} {last_name}) added successfully!')
                 return redirect(url_for('admin_employees'))
             else:
                 flash('Registration successful! You can now login.')
                 return redirect(url_for('employee_login'))
-                
         except mysql.connector.IntegrityError:
             flash('Error: That Employee ID is already taken.')
         finally:
@@ -144,8 +152,97 @@ def hr_register():
             conn.close()
     return render_template('hr_register.html')
 
+# --- PASSWORD RECOVERY ---
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        emp_id = request.form['employee_id']
+        dob = request.form['dob'] 
+        
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM Employee WHERE employee_id = %s AND dob = %s", (emp_id, dob))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if user:
+            session['reset_emp_id'] = emp_id 
+            return redirect(url_for('reset_password'))
+        else:
+            flash('Verification Failed: Incorrect ID or Date of Birth.')
+    return render_template('forgot_password.html')
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if 'reset_emp_id' not in session:
+        return redirect(url_for('forgot_password'))
+        
+    if request.method == 'POST':
+        new_password = request.form['password']
+        hashed_password = generate_password_hash(new_password)
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE Employee SET password = %s WHERE employee_id = %s", (hashed_password, session['reset_emp_id']))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        session.pop('reset_emp_id', None)
+        flash('Password Reset Successful! You may now log in.')
+        return redirect(url_for('index'))
+    return render_template('reset_password.html')
+
+# --- AUTOMATED CHECK-OUT & MULTI-SESSION MATH ---
 @app.route('/logout')
 def logout():
+    if session.get('loggedin') and session.get('role') == 'Employee':
+        emp_id = session['employee_id']
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Grab the MOST RECENT check-in that doesn't have a check-out yet
+        cursor.execute("""
+            SELECT check_in FROM Attendance 
+            WHERE employee_id = %s AND date = %s AND (check_out IS NULL OR check_out = '') 
+            ORDER BY check_in DESC LIMIT 1
+        """, (emp_id, today_date))
+        record = cursor.fetchone()
+        
+        if record and record['check_in']:
+            try:
+                check_in_str = str(record['check_in']) 
+                
+                if len(check_in_str) > 5:
+                    t1 = datetime.strptime(check_in_str, '%H:%M:%S')
+                else:
+                    t1 = datetime.strptime(check_in_str, '%H:%M')
+                
+                now = datetime.now()
+                checkout_time_str = now.strftime('%H:%M:%S')
+                t2 = datetime.strptime(checkout_time_str, '%H:%M:%S')
+                
+                if t2 < t1:
+                    total_hours = 0.0
+                else:
+                    total_hours = round((t2 - t1).total_seconds() / 3600, 2)
+                    
+                # Update ONLY that exact session row using the matching check_in time
+                cursor.execute("""
+                    UPDATE Attendance 
+                    SET check_out = %s, total_hours = %s 
+                    WHERE employee_id = %s AND date = %s AND check_in = %s
+                """, (checkout_time_str, total_hours, emp_id, today_date, record['check_in']))
+                conn.commit()
+            except Exception as e:
+                print(f"Attendance Math Error: {e}")
+                
+        cursor.close()
+        conn.close()
+
     session.clear()
     return redirect(url_for('index'))
 
@@ -155,29 +252,13 @@ def dashboard():
     if 'loggedin' not in session or session.get('role') != 'Employee': return redirect(url_for('employee_login'))
     return render_template('dashboard.html', first_name=session['first_name'])
 
-@app.route('/attendance', methods=['GET', 'POST'])
+@app.route('/attendance')
 def attendance():
     if 'loggedin' not in session: return redirect(url_for('employee_login'))
     emp_id = session['employee_id']
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
-    if request.method == 'POST':
-        date = request.form['date']
-        check_in = request.form['check_in']
-        check_out = request.form['check_out']
-        try:
-            t1 = datetime.strptime(check_in, '%H:%M')
-            t2 = datetime.strptime(check_out, '%H:%M')
-            total_hours = round((t2 - t1).total_seconds() / 3600, 2)
-        except: total_hours = 0.0
-            
-        cursor.execute("INSERT INTO Attendance (employee_id, date, check_in, check_out, total_hours) VALUES (%s, %s, %s, %s, %s)", (emp_id, date, check_in, check_out, total_hours))
-        conn.commit()
-        flash('Attendance logged successfully!')
-        return redirect(url_for('attendance'))
-        
-    cursor.execute("SELECT * FROM Attendance WHERE employee_id = %s ORDER BY date DESC", (emp_id,))
+    cursor.execute("SELECT * FROM Attendance WHERE employee_id = %s ORDER BY date DESC, check_in DESC", (emp_id,))
     records = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -251,8 +332,6 @@ def admin_payroll():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     
-    # --- ⚙️ AUTOMATED LEAVE PENALTY CONFIGURATION ---
-    # Deducts $50 for every day of approved leave taken by the employee
     PENALTY_PER_LEAVE_DAY = 50.00 
     
     if request.method == 'POST':
@@ -264,11 +343,9 @@ def admin_payroll():
         standard_deductions = float(request.form['deductions'])
         tax = float(request.form['tax'])
         
-        # 1. Fetch all "Approved" leaves for this specific employee
         cursor.execute("SELECT start_date, end_date FROM Leave_Table WHERE employee_id = %s AND status = 'Approved'", (emp_id,))
         approved_leaves = cursor.fetchall()
         
-        # 2. Calculate total leave days across all approved requests
         total_leave_days = 0
         for leave in approved_leaves:
             try:
@@ -281,19 +358,14 @@ def admin_payroll():
                 days = (end - start).days + 1 
                 total_leave_days += days
             except Exception as e:
-                print(f"Date math error: {e}")
+                pass
         
-        # 3. Calculate the Leave Penalty
         leave_penalty = total_leave_days * PENALTY_PER_LEAVE_DAY
-        
-        # 4. Calculate Final Net Pay
         total_earnings = base_pay + allowances + bonuses
         total_deductions = standard_deductions + tax + leave_penalty
         net_pay = total_earnings - total_deductions
-        
         pay_date = datetime.today().strftime('%Y-%m-%d')
         
-        # 5. Insert into database (combining standard deductions + leave penalty)
         cursor.execute("""
             INSERT INTO Salary (employee_id, pay_period, base_pay, allowances, bonuses, deductions, tax, net_pay, status, pay_date) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'Paid', %s)

@@ -9,9 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* =========================================
-           FULL NEXAVERSE CSS & CYBER THEME
-           ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #00f0ff; --secondary: #ff00d4; --accent: #9d4edd;
@@ -21,7 +18,6 @@
         }
         body { font-family: 'Outfit', sans-serif; background: var(--dark-1); color: #ffffff; overflow-x: hidden; min-height: 100vh; }
         
-        /* TOP NAVIGATION BAR */
         .top-nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 50px; background: rgba(10, 10, 18, 0.8);
@@ -30,63 +26,19 @@
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
         }
         
-        /* TOP-LEFT STATIC BRAND NAME */
         .nav-logo { 
-            font-family: 'Syne', sans-serif; 
-            font-size: 28px; 
-            font-weight: 700; 
-            letter-spacing: 4px; 
-            text-decoration: none; 
-            text-transform: uppercase;
-            
-            /* Static Gradient (No Animation) */
-            background: linear-gradient(to right, var(--primary), var(--secondary)); 
-            color: #000;
-            background-clip: text;
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            
-            /* Static Glow */
+            font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 4px; text-decoration: none; text-transform: uppercase;
+            background: linear-gradient(to right, var(--primary), var(--secondary)); color: #000;
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5)); 
         }
 
         .nav-links { display: flex; gap: 40px; align-items: center; }
-        
-        /* Standard Link Style */
-        .nav-links a { 
-            color: rgba(255,255,255,0.7); 
-            text-decoration: none; 
-            font-size: 16px; 
-            font-weight: 500; 
-            transition: 0.3s; 
-            font-family: 'Outfit', sans-serif;
-            position: relative;
-        }
-        
-        .nav-links a:hover { 
-            color: var(--primary); 
-            text-shadow: 0 0 10px var(--glow-cyan); 
-        }
+        .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 16px; font-weight: 500; transition: 0.3s; font-family: 'Outfit', sans-serif; position: relative; }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--glow-cyan); }
+        .nav-links a.active-nav { color: var(--primary); text-shadow: 0 0 10px var(--glow-cyan); font-weight: 600; }
+        .nav-links a.active-nav::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 100%; height: 2px; background: var(--primary); box-shadow: 0 0 10px var(--glow-cyan); border-radius: 2px; }
 
-        /* ACTIVE HIGHLIGHT STYLE */
-        .nav-links a.active-nav {
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--glow-cyan);
-            font-weight: 600;
-        }
-        .nav-links a.active-nav::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--glow-cyan);
-            border-radius: 2px;
-        }
-
-        /* Ambient Background */
         .ambient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); animation: float 20s ease-in-out infinite; }
         .orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%); top: -200px; left: -200px; }
@@ -94,23 +46,14 @@
         @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-30px, 50px) scale(0.95); } }
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; z-index: 1; }
         
-        /* Main Container Adjusted for Navbar */
         .container { position: relative; z-index: 10; padding: 120px 20px 40px; max-width: 1200px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* Keyframe Animations */
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } from { transform: translateY(30px); } }
 
-        /* --- CENTER BRAND NAME (Animated) --- */
         .header { text-align: center; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.8s ease-out 0.2s forwards; }
-        .brand-name { 
-            font-family: 'Syne', sans-serif; font-size: 56px; font-weight: 700; letter-spacing: 8px; margin-bottom: 12px; text-transform: uppercase;
-            background: linear-gradient(to right, var(--primary), var(--secondary), var(--primary)); background-size: 200% auto; color: #000;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); animation: shine 3s linear infinite;
-        }
+        .brand-name { font-family: 'Syne', sans-serif; font-size: 56px; font-weight: 700; letter-spacing: 8px; margin-bottom: 12px; text-transform: uppercase; background: linear-gradient(to right, var(--primary), var(--secondary), var(--primary)); background-size: 200% auto; color: #000; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); animation: shine 3s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
         .tagline { font-size: 13px; letter-spacing: 5px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; font-weight: 300; }
         
-        /* Standard Panel & Buttons */
         .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; margin: 0 auto; width: 100%; position: relative; overflow: hidden; opacity: 0; animation: fadeUp 0.8s ease-out 0.4s forwards;}
         .btn-primary { display: inline-block; width: 100%; padding: 16px; margin-bottom: 15px; background: linear-gradient(135deg, rgba(0, 240, 255, 0.15) 0%, rgba(255, 0, 212, 0.15) 100%); border: 1px solid var(--primary); border-radius: 50px; color: #fff; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; text-align: center; text-decoration: none; text-shadow: 0 0 10px var(--glow-cyan); transition: all 0.4s ease; cursor: pointer;}
         .btn-primary:hover { background: linear-gradient(135deg, rgba(0, 240, 255, 0.3) 0%, rgba(255, 0, 212, 0.3) 100%); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--glow-cyan); }
@@ -121,7 +64,6 @@
 <body>
     <nav class="top-nav">
         <a href="{{ url_for('index') }}" class="nav-logo">PAYPRO</a>
-        
         <div class="nav-links">
             <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active-nav{% endif %}">Home</a>
             <a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active-nav{% endif %}">About Us</a>
@@ -154,7 +96,6 @@
         {% endwith %}
 
         {% block content %}{% endblock %}
-
     </div>
 </body>
 </html>

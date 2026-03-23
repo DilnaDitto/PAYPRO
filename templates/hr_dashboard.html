@@ -45,25 +45,29 @@
 </div>
 
 <style>
-    .five-column-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr); 
-        gap: 20px; /* Increased gap between cards */
-        margin-bottom: 50px;
+    /* Switched from Grid to Flexbox for perfectly centered wrapping */
+    .five-column-grid { 
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+        gap: 20px; 
+        margin-bottom: 50px; 
     }
-
-    .dash-card {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px;
-        padding: 40px 20px; /* INCREASED PADDING for taller/wider cards */
-        text-decoration: none;
-        color: #fff;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    
+    .dash-card { 
+        flex: 1 1 200px; /* Allows cards to shrink/grow dynamically */
+        max-width: 230px; /* Prevents them from getting too wide */
+        background: rgba(255,255,255,0.03); 
+        border: 1px solid rgba(255,255,255,0.1); 
+        border-radius: 16px; 
+        padding: 40px 20px; 
+        text-decoration: none; 
+        color: #fff; 
+        transition: all 0.3s ease; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
     }
     
     .dash-card:hover {
@@ -74,28 +78,22 @@
     }
     
     .dash-icon {
-        font-size: 45px; /* LARGER ICONS */
+        font-size: 45px; 
         margin-bottom: 18px;
         transition: 0.3s;
     }
     
     .dash-card h3 {
         font-family: 'Syne', sans-serif;
-        font-size: 17px; /* LARGER TITLES */
+        font-size: 17px; 
         margin-bottom: 10px;
         color: #fff;
     }
     
     .dash-card p {
-        font-size: 13px; /* LARGER SUBTEXT */
+        font-size: 13px; 
         color: rgba(255,255,255,0.5);
         line-height: 1.5;
-    }
-
-    @media (max-width: 1100px) {
-        .five-column-grid {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-        }
     }
 </style>
 {% endblock %}
